@@ -13,7 +13,6 @@ import react.*
 import react.dom.*
 import kotlinx.coroutines.*
 import kotlinx.css.*
-import models.SeedsResources
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
@@ -42,26 +41,13 @@ class RegisterComponent : RComponent<RegisterProps, RState>() {
             onChange = { event, _ -> props.setType(event.targetValue as String) }
         ) {
             attrs.inputProps = inputProps
-            mMenuItem("My Seeds", value = SeedsDto.MySeeds.path)
             mMenuItem("Available Seeds", value = SeedsDto.DetailedSeed.path)
-            mMenuItem("Category", value = SeedsDto.SeedCategory.path)
-            mMenuItem("app.seeds.Chore", value = SeedsDto.Chore.path)
         }
         when (props.type) {
-            SeedsDto.MySeeds.path -> mySeeds {}
             SeedsDto.DetailedSeed.path -> detailedSeed {}
-            SeedsDto.SeedCategory.path -> category {}
-            SeedsDto.Chore.path -> localChores {}
         }
     }
 }
-
-private class MySeeds(props: DisplayProps): DisplayComponent<SeedsResources.MySeeds>(props) {
-    override suspend fun get() = SeedsApi.MySeedsApi.index()
-    override fun SeedsResources.MySeeds.label() = description //I don't think extension function is a good choice
-    override fun SeedsResources.MySeeds.transform() = "$id ${detailedSeed?.image?:"No image found"}"
-}
-fun RBuilder.mySeeds(handler: DisplayProps.() -> Unit) = child(MySeeds::class) { attrs { handler() } }
 
 private class DetailedSeed(props: DisplayProps): DisplayComponent<Seeds.DetailedSeed>(props) {
     override suspend fun get() = SeedsApi.DetailedSeedsApi.index()
@@ -69,20 +55,6 @@ private class DetailedSeed(props: DisplayProps): DisplayComponent<Seeds.Detailed
     override fun Seeds.DetailedSeed.transform() = "$id $name"
 }
 fun RBuilder.detailedSeed(handler: DisplayProps.() -> Unit) = child(DetailedSeed::class) { attrs { handler() } }
-
-private class SeedCategory(props: DisplayProps): DisplayComponent<Seeds.SeedCategory>(props) {
-    override suspend fun get() = SeedsApi.CategoryApi.index()
-    override fun Seeds.SeedCategory.label() = name
-    override fun Seeds.SeedCategory.transform() = "$id $name"
-}
-fun RBuilder.category(handler: DisplayProps.() -> Unit) = child(SeedCategory::class) { attrs { handler() } }
-
-private class Chore(props: DisplayProps): DisplayComponent<Seeds.Chore>(props) {
-    override suspend fun get() = SeedsApi.ChoreApi.index()
-    override fun Seeds.Chore.label() = name
-    override fun Seeds.Chore.transform() = "$id $name"
-}
-fun RBuilder.localChores(handler: DisplayProps.() -> Unit) = child(Chore::class) { attrs { handler() } }
 
 external interface DisplayProps : RProps
 

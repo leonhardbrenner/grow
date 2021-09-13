@@ -10,19 +10,11 @@ import services.SeedsService
 
 class CoreApplication @Inject constructor(
     val dao: SeedsDao,
-    val chore: SeedsRouting.Chore,
-    val schedule: SeedsRouting.Schedule,
     val detailedSeed: SeedsRouting.DetailedSeed,
-    val seedCategory: SeedsRouting.SeedCategory,
-    val mySeeds: SeedsRouting.MySeeds
     ) {
 
     fun routesFrom(routing: Routing) {
-        chore.routes(routing)
-        schedule.routes(routing)
         detailedSeed.routes(routing)
-        seedCategory.routes(routing)
-        mySeeds.routes(routing)
     }
 
     object Module : AbstractModule() {
